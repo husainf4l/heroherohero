@@ -13,7 +13,7 @@ export default function Hero() {
         {/* Main Heading */}
         <h2 className="text-6xl md:text-7xl font-bold mb-6 max-w-4xl leading-tight">
           <span className="text-black">Land Your Dream</span>{' '}
-          <span className="bg-gradient-to-r from-teal-500 to-cyan-600 bg-clip-text text-transparent">Job 10x Faster</span>
+          <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">Job 10x Faster</span>
         </h2>
 
         {/* Description */}
@@ -23,7 +23,7 @@ export default function Hero() {
         </p>
 
         {/* Call to Action */}
-        <button className="px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full hover:from-teal-600 hover:to-cyan-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+        <button className="px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
           Get Started
         </button>
       </div>

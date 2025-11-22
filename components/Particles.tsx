@@ -146,13 +146,13 @@ export default function Particles() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.16}
-        color="#1a4d99"
+        size={0.2}
+        color="#0ea5e9"
         transparent
-        opacity={0.9}
+        opacity={0.6}
         sizeAttenuation
         alphaTest={0.3}
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
         depthWrite={false}
         map={texture}
       />
