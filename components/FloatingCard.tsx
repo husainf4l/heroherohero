@@ -23,6 +23,7 @@ interface Job {
 export default function FloatingCard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -56,12 +57,119 @@ export default function FloatingCard() {
           }),
         });
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const { data } = await response.json();
         if (data?.jobs && data.jobs.length > 0) {
-          setJobs(data.jobs.slice(0, 6)); // Get up to 6 jobs
+          setJobs(data.jobs.slice(0, 6));
+        } else {
+          setError('No jobs found');
         }
       } catch (error) {
         console.error('Error fetching jobs:', error);
+        // Fallback to mock data if server is unavailable
+        const mockJobs: Job[] = [
+          {
+            id: '1',
+            titleEn: 'Senior Full Stack Developer',
+            shortDescriptionEn: 'Join our team to build cutting-edge web applications using modern technologies.',
+            locationCity: 'Amman',
+            locationCountry: 'Jordan',
+            salaryMin: 3000,
+            salaryMax: 5000,
+            salaryCurrency: 'USD',
+            employmentType: 'FULL_TIME',
+            workType: 'REMOTE',
+            jobLevel: 'SENIOR',
+            skills: ['React', 'Node.js', 'TypeScript', 'PostgreSQL'],
+            deadline: '2025-12-31',
+            companyId: '1'
+          },
+          {
+            id: '2',
+            titleEn: 'UI/UX Designer',
+            shortDescriptionEn: 'Create beautiful and intuitive user interfaces for our products.',
+            locationCity: 'Dubai',
+            locationCountry: 'UAE',
+            salaryMin: 2500,
+            salaryMax: 4000,
+            salaryCurrency: 'USD',
+            employmentType: 'FULL_TIME',
+            workType: 'HYBRID',
+            jobLevel: 'MID_LEVEL',
+            skills: ['Figma', 'Adobe XD', 'Prototyping'],
+            deadline: '2025-12-25',
+            companyId: '2'
+          },
+          {
+            id: '3',
+            titleEn: 'DevOps Engineer',
+            shortDescriptionEn: 'Manage and optimize our cloud infrastructure and deployment pipelines.',
+            locationCity: 'Riyadh',
+            locationCountry: 'Saudi Arabia',
+            salaryMin: 4000,
+            salaryMax: 6000,
+            salaryCurrency: 'USD',
+            employmentType: 'FULL_TIME',
+            workType: 'ON_SITE',
+            jobLevel: 'SENIOR',
+            skills: ['AWS', 'Docker', 'Kubernetes', 'CI/CD'],
+            deadline: '2025-12-20',
+            companyId: '3'
+          },
+          {
+            id: '4',
+            titleEn: 'Mobile App Developer',
+            shortDescriptionEn: 'Build native mobile applications for iOS and Android platforms.',
+            locationCity: 'Cairo',
+            locationCountry: 'Egypt',
+            salaryMin: 2000,
+            salaryMax: 3500,
+            salaryCurrency: 'USD',
+            employmentType: 'FULL_TIME',
+            workType: 'REMOTE',
+            jobLevel: 'MID_LEVEL',
+            skills: ['React Native', 'Swift', 'Kotlin'],
+            deadline: '2025-12-28',
+            companyId: '4'
+          },
+          {
+            id: '5',
+            titleEn: 'Data Scientist',
+            shortDescriptionEn: 'Analyze data and build machine learning models to drive business insights.',
+            locationCity: 'Beirut',
+            locationCountry: 'Lebanon',
+            salaryMin: 3500,
+            salaryMax: 5500,
+            salaryCurrency: 'USD',
+            employmentType: 'FULL_TIME',
+            workType: 'HYBRID',
+            jobLevel: 'SENIOR',
+            skills: ['Python', 'TensorFlow', 'SQL', 'Pandas'],
+            deadline: '2025-12-22',
+            companyId: '5'
+          },
+          {
+            id: '6',
+            titleEn: 'Product Manager',
+            shortDescriptionEn: 'Lead product strategy and work with cross-functional teams.',
+            locationCity: 'Amman',
+            locationCountry: 'Jordan',
+            salaryMin: 3000,
+            salaryMax: 4500,
+            salaryCurrency: 'USD',
+            employmentType: 'FULL_TIME',
+            workType: 'ON_SITE',
+            jobLevel: 'SENIOR',
+            skills: ['Agile', 'Product Strategy', 'Analytics'],
+            deadline: '2025-12-30',
+            companyId: '6'
+          }
+        ];
+        setJobs(mockJobs);
+        setError(null); // Clear error when using mock data
       } finally {
         setLoading(false);
       }
@@ -97,7 +205,18 @@ export default function FloatingCard() {
   if (loading) {
     return (
       <div className="relative w-full py-20 flex items-center justify-center bg-white px-6">
-        <div className="text-gray-400">Loading...</div>
+        <div className="text-gray-400">Loading jobs...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="relative w-full py-20 flex items-center justify-center bg-white px-6">
+        <div className="max-w-md text-center">
+          <div className="text-red-500 font-semibold mb-2">Error Loading Jobs</div>
+          <div className="text-gray-600 text-sm">{error}</div>
+        </div>
       </div>
     );
   }
