@@ -13,7 +13,7 @@ export default function Particles() {
   const mouseVel = useRef({ x: 0, y: 0 })
   const prevMouse = useRef({ x: 0, y: 0 })
 
-  const particleCount = 300
+  const particleCount = 600
 
   // Create energy streak texture (elongated glow)
   const streakTexture = useMemo(() => {
@@ -100,15 +100,20 @@ export default function Particles() {
       // Keep particles evenly distributed on circle
       const anglePosition = particleData.angle[i]
       
+      // Create two circles - inner and outer
+      // Determine which circle this particle belongs to based on particle index
+      const isInnerCircle = (i % 3 === 0) // Every 3rd particle is in inner circle
+      
       // Enhanced wavy motion - multiple wave layers
-      const minRadius = 1.8
-      const maxRadius = 3.5
+      const minRadius = isInnerCircle ? 0.8 : 1.8 // Inner circle: 0.8-2.0, Outer: 1.8-3.5
+      const maxRadius = isInnerCircle ? 2.0 : 3.5
       
       // Primary wave - travels around the circle
       const wave1 = Math.sin(t * 1.5 + anglePosition * 3) * 0.5 + 0.5 // Fast wave
       
-      // Secondary wave - opposite direction
-      const wave2 = Math.sin(t * 0.9 - anglePosition * 2.5) * 0.3 // Counter-rotating
+      // Secondary wave - opposite direction (different speed for inner circle)
+      const wave2Speed = isInnerCircle ? 1.2 : 0.9
+      const wave2 = Math.sin(t * wave2Speed - anglePosition * 2.5) * 0.3 // Counter-rotating
       
       // Tertiary wave - slow breathing
       const wave3 = Math.sin(t * 0.6) * 0.4 // Global pulse
@@ -162,15 +167,19 @@ export default function Particles() {
         y += Math.sin(angleToCenter) * pullStrength
       }
       
-      // Dynamic sizing based on wave position - much tinier
+      // Dynamic sizing - much smaller in the middle, gradually bigger at edges
       const radiusProgress = (currentRadius - minRadius) / (maxRadius - minRadius)
       const normalizedProgress = Math.max(0, Math.min(1, radiusProgress))
       
       // Add multiple size wave effects
-      const sizeWave1 = Math.sin(t * 3.5 + anglePosition * 3) * 0.12 + 1
-      const sizeWave2 = Math.sin(t * 2.8 - anglePosition * 2) * 0.08 + 1
-      const sizeGrowth = Math.pow(normalizedProgress, 0.8)
-      const targetSize = (0.001 + sizeGrowth * 0.18) * sizeWave1 * sizeWave2 // 0.001 to 0.19 (much smaller)
+      const sizeWave1 = Math.sin(t * 3.5 + anglePosition * 3) * 0.06 + 1
+      const sizeWave2 = Math.sin(t * 2.8 - anglePosition * 2) * 0.04 + 1
+      
+      // Steep growth curve - middle particles extremely tiny, outer ones bigger
+      const sizeGrowth = Math.pow(normalizedProgress, 1.5) // Very steep = much smaller in middle
+      const baseSize = 0.0003 // Extremely tiny base for middle particles
+      const maxGrowth = 0.15 // Maximum size at edges
+      const targetSize = (baseSize + sizeGrowth * maxGrowth) * sizeWave1 * sizeWave2 // 0.0003 to 0.15
       
       particleData.sizes[i] += (targetSize - particleData.sizes[i]) * 0.15
       sizes[i] = particleData.sizes[i]
@@ -216,11 +225,11 @@ export default function Particles() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.18}
+        size={0.1}
         color="#3b82f6"
         map={streakTexture}
         transparent
-        opacity={0.75}
+        opacity={0.68}
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
