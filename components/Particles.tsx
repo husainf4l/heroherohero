@@ -137,11 +137,27 @@ export default function Particles() {
       x += flowX
       y += flowY
       
-      // Move entire circle with mouse (smooth trailing)
-      x += mouseX * 0.4
-      y += mouseY * 0.4
+      // Automatic movement all around the hero section - wide coverage
+      const autoMoveX = Math.sin(t * 0.35) * 5.5
+      const autoMoveY = Math.cos(t * 0.28) * 4.5
       
-      // Calculate distance from mouse
+      // Add secondary movement for more complexity and coverage
+      const autoMoveX2 = Math.sin(t * 0.15) * 2.5
+      const autoMoveY2 = Math.cos(t * 0.18) * 2.0
+      
+      // Tertiary wave for even more area coverage
+      const autoMoveX3 = Math.cos(t * 0.08) * 1.5
+      const autoMoveY3 = Math.sin(t * 0.1) * 1.0
+      
+      // Apply automatic movement first (always active)
+      x += autoMoveX + autoMoveX2 + autoMoveX3
+      y += autoMoveY + autoMoveY2 + autoMoveY3
+      
+      // Then add mouse influence (optional)
+      x += mouseX * 0.3
+      y += mouseY * 0.3
+      
+      // Calculate distance from mouse for interaction
       const dx = x - mouseX
       const dy = y - mouseY
       const distFromMouse = Math.sqrt(dx * dx + dy * dy)
